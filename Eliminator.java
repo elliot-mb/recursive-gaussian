@@ -5,10 +5,11 @@ import java.util.List;
 
 public class Eliminator {
     static Eliminator e;
+    private Matrix m; //input matrix
     private ArrayList<Double> solution;
 
     private Eliminator(Matrix m){
-        //this.m = m;
+        this.m = m;
         this.solution = eliminate(m);
     }
 
@@ -39,13 +40,13 @@ public class Eliminator {
     }
 
     private Double backSub(Matrix m, Integer row, ArrayList<Double> unknowns){
-        List<Double> coeffs; Double divisor, sum = 0d; int offset = row > 0 ? 1 : 0;
+        List<Double> coeffs; Double divisor, sum = 0d; int offset = row == 0 ? 0 : 1;
         //offset is zero when we are on the top row (one with the most coefficients)
         divisor = m.getElem(row, offset);
         coeffs = m.getRow(row).subList(offset, m.getColumns() - 1);
         for(int i = 1; i < coeffs.size(); i++){ //starts on the second coefficient
             //unknowns start one later than our coefficients (the first coefficient is of the unknown we're finding)
-            sum -= coeffs.get(i) * unknowns.get(i - 1);
+            sum -= coeffs.get(i) * unknowns.get(unknowns.size() - i);
         } //zipwith
         sum += m.getElem(row, m.getColumns() - 1);
         return sum / divisor;
@@ -81,12 +82,10 @@ public class Eliminator {
 
     public String toString(){
         String out = "Solutions \n";
-        DecimalFormat df = new DecimalFormat(); df.setMaximumFractionDigits(2);
-        int x = 0;
+        DecimalFormat df = new DecimalFormat(); df.setMaximumFractionDigits(6);
         Collections.reverse(solution); //the recursive solution is backwards
-        for(Double d : solution){
-            out += "x" + x + ": " + df.format(d) + "\n";
-            x++;
+        for(int i = 0; i < m.getRows(); i++){
+            out += "x" + i + ": " + df.format(solution.get(i)) + "\n";
         }
         return out;
     }

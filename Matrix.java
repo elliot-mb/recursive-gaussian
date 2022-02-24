@@ -26,9 +26,9 @@ public class Matrix {
     }
 
     public String toString(){
-        String s = rows + "x" + columns + " Matrix\n";
+        String s = rows + "x" + columns + " Matrix";
         for (ArrayList<Double> row : A){
-            s += row + "\n";
+            s += "\n" + row;
         }
         return s;
     }
