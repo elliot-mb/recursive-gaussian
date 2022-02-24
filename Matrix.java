@@ -38,7 +38,11 @@ public class Matrix {
     public int getColumns(){ return columns; }
     public ArrayList<Double> getRow(int i){ return A.get(i); }
     public ArrayList<Double> copyRow(int i){ return (ArrayList<Double>) A.get(i).clone(); }
-    public Double getElem(int i, int j){ return A.get(i).get(j); } //row, column (zero indexed)
+    public Double getElem(int i, int j){
+        Test.assertBounded(0, rows - 1, i, "Row number out of bounds");
+        Test.assertBounded(0, columns - 1, j, "Column number out of bounds");
+        return A.get(i).get(j);
+    } //row, column (zero indexed)
     public ArrayList<ArrayList<Double>> getMatrix() { return A; }
 
     //setters

@@ -1,5 +1,6 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Eliminator {
     }
 
     private Matrix next(Matrix m){ //finds the next gaussian/recursive submatrix (bottom right corner)
+        Test.assertBounded(1, Integer.MAX_VALUE, m.getRows(), "Eliminator.next can't go any deeper");
         ArrayList<Double> flat = new ArrayList<Double>();
         for(int i = 1; i < m.getRows(); i++){ //copy the matrix except for the first column and row
             flat.addAll(m.getRow(i).subList(1, m.getColumns()));
@@ -59,7 +61,12 @@ public class Eliminator {
         ArrayList<Double> unknowns = new ArrayList<Double>(), newRow;
         Matrix m1, m2;
         m1 = swapTop(m0); //matrix with non-zero top-left element
-        firstValue = m1.getElem(0, 0);
+        try{
+            firstValue = m1.getElem(0, 0);
+        } catch (AssertionError e){
+            System.out.println(e);
+            return new ArrayList<Double>();
+        }
         for(int i = 1; i < m1.getRows(); i++){ //one row at a time starting with the second
             newRow = new ArrayList<Double>();
             fact = m1.getElem(i, 0) / firstValue; //starts by dividing n, n + i by the elimination coeff
@@ -81,9 +88,10 @@ public class Eliminator {
     }
 
     public String toString(){
-        String out = "Solutions \n";
+        String out = "";
         DecimalFormat df = new DecimalFormat(); df.setMaximumFractionDigits(6);
         Collections.reverse(solution); //the recursive solution is backwards
+        if(solution.size() > 0) { out += "Solutions \n"; }
         for(int i = 0; i < m.getRows(); i++){
             out += "x" + i + ": " + df.format(solution.get(i)) + "\n";
         }
