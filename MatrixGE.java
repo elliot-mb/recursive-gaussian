@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public class Matrix {
+public class MatrixGE {
     private final int rows, columns;
     private ArrayList<ArrayList<Double>> A;
 
-    Matrix(ArrayList<Double> flat){
+    MatrixGE(ArrayList<Double> flat){
         this.rows = (int) Math.floor(Math.sqrt(flat.size()));
         this.columns = rows + 1; // x rows of x+1 columns
         this.A = new ArrayList<ArrayList<Double>>();

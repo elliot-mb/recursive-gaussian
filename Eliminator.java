@@ -1,28 +1,20 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Eliminator {
     static Eliminator e;
-    private Matrix m; //input matrix
+    private MatrixGE m; //input matrix
     private ArrayList<Double> solution;
 
-    private Eliminator(Matrix m){
+    public Eliminator(MatrixGE m){
         this.m = m;
         this.solution = eliminate(m);
     }
 
-    static Eliminator getInstance(Matrix A){ //singleton
-        if(e == null){
-            e = new Eliminator(A);
-        }
-        return e;
-    }
-
     //helpers
-    private Matrix swapTop(Matrix m){ //if we have a zero at the 1st row 1st column
+    private MatrixGE swapTop(MatrixGE m){ //if we have a zero at the 1st row 1st column
         int i = 0;
         while(i < m.getRows() && m.getElem(i, 0) == 0){ i++; }
         if (i == 0) return m;
@@ -32,16 +24,16 @@ public class Eliminator {
         return m;
     }
 
-    private Matrix next(Matrix m){ //finds the next gaussian/recursive submatrix (bottom right corner)
+    private MatrixGE next(MatrixGE m){ //finds the next gaussian/recursive submatrix (bottom right corner)
         Test.assertBounded(1, Integer.MAX_VALUE, m.getRows(), "Eliminator.next can't go any deeper");
         ArrayList<Double> flat = new ArrayList<Double>();
         for(int i = 1; i < m.getRows(); i++){ //copy the matrix except for the first column and row
             flat.addAll(m.getRow(i).subList(1, m.getColumns()));
         }
-        return new Matrix(flat);
+        return new MatrixGE(flat);
     }
 
-    private Double backSub(Matrix m, Integer row, ArrayList<Double> unknowns){
+    private Double backSub(MatrixGE m, Integer row, ArrayList<Double> unknowns){
         List<Double> coeffs; Double divisor, sum = 0d; int offset = row == 0 ? 0 : 1;
         //offset is zero when we are on the top row (one with the most coefficients)
         divisor = m.getElem(row, offset);
@@ -56,10 +48,10 @@ public class Eliminator {
 
     // recursive solution that eliminates the first column bar the topmost element
     // then works out what the missing coefficient is on the top
-    private ArrayList<Double> eliminate(Matrix m0){
+    private ArrayList<Double> eliminate(MatrixGE m0){
         Double fact, firstValue;
         ArrayList<Double> unknowns = new ArrayList<Double>(), newRow;
-        Matrix m1, m2;
+        MatrixGE m1, m2;
         m1 = swapTop(m0); //matrix with non-zero top-left element
         try{
             firstValue = m1.getElem(0, 0);
